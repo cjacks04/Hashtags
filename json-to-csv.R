@@ -33,3 +33,4 @@ remove(hashtags)
 # Export file to Dropbox
 setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Dataset")
 write.csv(hashtags_format, "hashtags_format.csv")
+remove(hashtags_format)
