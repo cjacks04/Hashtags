@@ -12,7 +12,7 @@ library(readr)
 library(plyr)
 
 # Import file
-hashtags <- read_file("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Datasets/Gravity Spy/project-1104-tags_2017-03-26.json")
+hashtags <- read_file("~/Dropbox/INSPIRE/Data/System dumps/GS Comments/project-1104-tags_2017-07-14.json")
 
 # Take json to csv  
 hashtags_format <- hashtags %>% as.tbl_json %>% 
@@ -31,5 +31,5 @@ hashtags_format <- hashtags %>% as.tbl_json %>%
 remove(hashtags)
 
 # Export file to Dropbox
-setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Datasets/Gravity Spy")
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Dataset")
 write.csv(hashtags_format, "hashtags_format.csv")
