@@ -5,8 +5,7 @@
 library(reshape2)
 
 # Import hashtag dataset
-# File is here: https://www.dropbox.com/s/cdil6uu5lcrucmf/hashtags_format.csv?dl=0
-
+# File is here: https://www.dropbox.com/sh/5gl91pgxfwa9k4k/AAAO-OSR0HpOvXuN4LSffJ-0a?dl=0  Only you can dw on local machine
 hashtags <- read.csv("")
 
 # Create dataframe to get columns unique tag, date of first use, user_name, use count
@@ -16,4 +15,4 @@ hashtags_introduced <-
 hashtag_population <- 
 
 
-
+remove(hashtags,hashtags_introduced)
