@@ -30,36 +30,41 @@ hashtags$array.index <- hashtags$id <- hashtags$user_id <- hashtags$type <- hash
 
 # Create dataframe to get columns unique tag, date of first use, user_name, use count
 hashtags_introduced <- ddply(hashtags, c("tag"), summarize, 
-	first.use=min(time), 
-	use.count=sum(length(tag)))
+                             first.use=min(time), 
+                             use.count=sum(length(tag)))
 
 hashtags_introduced <- merge(hashtags_introduced, hashtags, 
-	by.x=c("tag", "first.use"), 
-	by.y=c("tag", "time"))[,c("tag", "first.use", "first.user"="user", "use.count")]
+                             by.x=c("tag", "first.use"), 
+                             by.y=c("tag", "time"))[,c("tag", "first.use", "first.user", "use.count")]
 
 names(hashtags_introduced)[names(hashtags_introduced) == 'user'] <- 'first.user'
 hashtags_introduced <- hashtags_introduced[hashtags_introduced$use.count != 1,]
 
-# Create subset of tags using hashtags_introduced date > oct 12 (launch) and date < june 14 (1 mth before last observation) and use count > 1
-hashtag_population <- ddply(hashtags, ~ tag, summarize, after.launch.date=min(date)>="2016/10/12", before.last.month=min(date)<=max(hashtags$date)-30)
+# Create subset of tags using hashtags_introduced date > Oct 12, 2016 (launch) and date < June 14, 2017 (1 mth before last observation) and use count > 1
+hashtag_population <- ddply(hashtags, ~ tag, summarize, 
+                            after.launch.date=min(date)>="2016/10/12", 
+                            before.last.month=min(date)<=max(hashtags$date)-30)
 hashtag_population <- hashtag_population[hashtag_population$after.launch.date == 1 & hashtag_population$before.last.month == 1,]["tag"]
 
 hashtag_population <- merge(hashtag_population, hashtags_introduced, 
-	by=c("tag"))
+                            by=c("tag"))
 
 hashtag_population <- merge(hashtag_population, hashtags, 
-	by=c("tag"))
+                            by=c("tag"))
 
 #remove(hashtags,hashtags_introduced)
 
 ########## Dataset Descriptions ##########
 
 # How many unique tags, tags total, unique users, and year-months tags introduced. 
+sprintf("%d unique tags", length(unique(hashtag_population$tag))) # Returns number of unique tags: 979 tags
+sprintf("%d tags total", sum(length(hashtag_population$tag))) # Returns total number of tags: 14064 tags
+sprintf("%d unique users", length(unique(hashtag_population$user))) # Returns number of unique users: 429 users
 
 # Create visualizations: 
-	# 1 Hashtags and occcassions used (histogram)
-	# 2 Growth chart showing the number of tags over time. x could be any measure of time
-	# 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
+# 1 Hashtags and occcassions used (histogram)
+# 2 Growth chart showing the number of tags over time. x could be any measure of time
+# 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
 
 # Add max time to hashtags_introduced and then compute difference (How can we visualize and control for date)
 
