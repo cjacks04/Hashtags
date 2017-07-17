@@ -1,23 +1,24 @@
 # Hashtag Analysis
 # Philip Lee and Corey Jackson 2017
 
-# Load Libraries 
-#install.packages("plyr", dependencies = TRUE)
+# Load Libraries
+install.packages("plyr", dependencies = TRUE)
 library(plyr)
-#install.packages("ggplot2")
+install.packages("ggplot2")
 library(ggplot2)
-#install.packages("data.table")
+install.packages("data.table")
 library(data.table)
-#install.packages("lme4")
+install.packages("lme4")
 library(lme4)
-#install.packages("reshape2")
+install.packages("reshape2")
 library(reshape2)
 
 # Import hashtag dataset
 # File is here: https://www.dropbox.com/sh/5gl91pgxfwa9k4k/AAAO-OSR0HpOvXuN4LSffJ-0a?dl=0  Only you can dw on local machine
-hashtags <- read.csv("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Dataset/hashtags_format.csv")
+hashtags <- read.csv("~/Documents/Academic/School/REU/hashtags/03/hashtags_format_2017-07-14.csv", header=TRUE, sep=",")
 
 hashtags$tag <- as.character(hashtags$tag)
+hashtags$user <- as.character(hashtags$user)
 hashtags$date <- as.Date(substring(hashtags$created_at, 1, 10))
 hashtags$month <- substring(hashtags$date, 1, 7)
 hashtags$hour <- substring(hashtags$created_at, 12, 19)
@@ -35,9 +36,9 @@ hashtags_introduced <- ddply(hashtags, c("tag"), summarize,
 
 hashtags_introduced <- merge(hashtags_introduced, hashtags, 
                              by.x=c("tag", "first.use"), 
-                             by.y=c("tag", "time"))[,c("tag", "first.use", "first.user", "use.count")]
+                             by.y=c("tag", "time"))[,c("tag", "first.use", "user", "use.count")]
 
-names(hashtags_introduced)[names(hashtags_introduced) == 'user'] <- 'first.user'
+names(hashtags_introduced)[names(hashtags_introduced)=='user'] <- 'first.user'
 hashtags_introduced <- hashtags_introduced[hashtags_introduced$use.count != 1,]
 
 # Create subset of tags using hashtags_introduced date > Oct 12, 2016 (launch) and date < June 14, 2017 (1 mth before last observation) and use count > 1
@@ -52,6 +53,8 @@ hashtag_population <- merge(hashtag_population, hashtags_introduced,
 hashtag_population <- merge(hashtag_population, hashtags, 
                             by=c("tag"))
 
+hashtag_population$week <- format(hashtag_population$date, "%Y-%U")
+
 #remove(hashtags,hashtags_introduced)
 
 ########## Dataset Descriptions ##########
@@ -63,8 +66,18 @@ sprintf("%d unique users", length(unique(hashtag_population$user))) # Returns nu
 
 # Create visualizations: 
 # 1 Hashtags and occcassions used (histogram)
+
 # 2 Growth chart showing the number of tags over time. x could be any measure of time
+hashtag_weekly_growth <- data.table(table(week=hashtag_population$week))
+names(hashtag_weekly_growth) <- c("week", "frequency")
+hashtag_weekly_growth[, cumulative := cumsum(frequency)]
+
+ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+geom_point()+ggtitle("Weekly Hahstag Growth")+xlab("Week")+ylab("Cumulative Uses of Tags")+theme(axis.text.x=element_text(angle=90))
+
 # 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
+no_users_introducing_hashtags <- data.frame(table(table(hashtags_introduced$first.user)))
+names(no_users_introducing_hashtags) <- c("No.tags","No.users")
 
+ggplot(data.frame(no_users_introducing_hashtags),aes(x=No.tags,y=No.users))+geom_point()+ggtitle("Number of Tags Introduced by Users")+xlab("Number of Tags")+ylab("Number of Users")
+ 
 # Add max time to hashtags_introduced and then compute difference (How can we visualize and control for date)
-
