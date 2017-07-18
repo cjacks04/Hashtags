@@ -52,8 +52,14 @@ hashtag_population <- merge(hashtag_population, hashtags_introduced,
 
 hashtag_population <- merge(hashtag_population, hashtags, 
                             by=c("tag"))
-
 hashtag_population$week <- format(hashtag_population$date, "%Y-%U")
+
+hashtag_population_week <- data.table(ddply(hashtag_population, ~tag, summarize, week=unique(week)))
+hashtag_population_week$week.no <- as.integer(as.Date(paste(hashtag_population_week$week,1,sep="-"), "%Y-%U-%u", origin="min(hashtag_population$date)"))
+hashtag_population_week$week.no <- (hashtag_population_week$week.no - min(hashtag_population_week$week.no) + 7)/7
+hashtag_population_week <- hashtag_population_week[with(hashtag_population_week, order(tag, week.no)), ]
+hashtag_population_week$week.no <- ave(hashtag_population_week$week.no, hashtag_population_week$tag, FUN = function(x) c(1, diff(x)))
+hashtag_population_week[,week.no := cumsum(week.no), by = list(tag)]
 
 #remove(hashtags,hashtags_introduced)
 
@@ -63,21 +69,30 @@ hashtag_population$week <- format(hashtag_population$date, "%Y-%U")
 sprintf("%d unique tags", length(unique(hashtag_population$tag))) # Returns number of unique tags: 979 tags
 sprintf("%d tags total", sum(length(hashtag_population$tag))) # Returns total number of tags: 14064 tags
 sprintf("%d unique users", length(unique(hashtag_population$user))) # Returns number of unique users: 429 users
+View(ddply(hashtag_population, ~tag, summarize, intro.month=substring(min(first.use),1,7)))
 
 # Create visualizations: 
 # 1 Hashtags and occcassions used (histogram)
+hashtag_occasions <- data.table(table(table(hashtag_population$tag)))
+names(hashtag_occasions) <- c("No.tags", "frequency")
+hashtag_occasions$No.tags <- as.integer(hashtag_occasions$No.tags)
+
+ggplot(hashtag_occasions, aes(x=No.tags,y=frequency))+geom_point()+ggtitle("Tag Usage")+xlab("Frequency of Tag Usage")+ylab("Count")+theme(axis.text.x=element_text(angle=90))
 
 # 2 Growth chart showing the number of tags over time. x could be any measure of time
-hashtag_weekly_growth <- data.table(table(week=hashtag_population$week))
+hashtag_weekly_growth <- data.table(table(hashtag_population$week))
 names(hashtag_weekly_growth) <- c("week", "frequency")
 hashtag_weekly_growth[, cumulative := cumsum(frequency)]
 
 ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+geom_point()+ggtitle("Weekly Hahstag Growth")+xlab("Week")+ylab("Cumulative Uses of Tags")+theme(axis.text.x=element_text(angle=90))
 
 # 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
-no_users_introducing_hashtags <- data.frame(table(table(hashtags_introduced$first.user)))
+no_users_introducing_hashtags <- ddply(hashtag_population, ~tag, summarize,
+                                       first.user=first(first.user))
+no_users_introducing_hashtags <- data.frame(table(table(no_users_introducing_hashtags$first.user)))
 names(no_users_introducing_hashtags) <- c("No.tags","No.users")
+no_users_introducing_hashtags$No.tags <- as.integer(as.character(no_users_introducing_hashtags$No.tags))
 
-ggplot(data.frame(no_users_introducing_hashtags),aes(x=No.tags,y=No.users))+geom_point()+ggtitle("Number of Tags Introduced by Users")+xlab("Number of Tags")+ylab("Number of Users")
+ggplot(data.frame(no_users_introducing_hashtags),aes(x=No.tags,y=No.users))+geom_point()+ggtitle("Number of Tags Introduced by Users")+xlab("Number of Tags Introduced")+ylab("Number of Users")
  
 # Add max time to hashtags_introduced and then compute difference (How can we visualize and control for date)
