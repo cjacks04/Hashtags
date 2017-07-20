@@ -77,22 +77,34 @@ hashtag_occasions <- data.table(table(table(hashtag_population$tag)))
 names(hashtag_occasions) <- c("No.tags", "frequency")
 hashtag_occasions$No.tags <- as.integer(hashtag_occasions$No.tags)
 
-ggplot(hashtag_occasions, aes(x=No.tags,y=frequency))+geom_point()+ggtitle("Tag Usage")+xlab("Frequency of Tag Usage")+ylab("Count")+theme(axis.text.x=element_text(angle=90))
+ggplot(hashtag_occasions, aes(x=No.tags,y=frequency))+
+    geom_point()+
+    ggtitle("Tag Usage")+
+    xlab("Frequency of Tag Usage")+
+    ylab("Count")+theme(axis.text.x=element_text(angle=90))
 
 # 2 Growth chart showing the number of tags over time. x could be any measure of time
 hashtag_weekly_growth <- data.table(table(hashtag_population$week))
 names(hashtag_weekly_growth) <- c("week", "frequency")
 hashtag_weekly_growth[, cumulative := cumsum(frequency)]
 
-ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+geom_point()+ggtitle("Weekly Hahstag Growth")+xlab("Week")+ylab("Cumulative Uses of Tags")+theme(axis.text.x=element_text(angle=90))
+ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+
+  geom_point()+ggtitle("Weekly Hahstag Growth")+
+  xlab("Week")+
+  ylab("Cumulative Uses of Tags")+
+  theme(axis.text.x=element_text(angle=90))
 
 # 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
 no_users_introducing_hashtags <- ddply(hashtag_population, ~tag, summarize,
                                        first.user=first(first.user))
+                                       
 no_users_introducing_hashtags <- data.frame(table(table(no_users_introducing_hashtags$first.user)))
 names(no_users_introducing_hashtags) <- c("No.tags","No.users")
 no_users_introducing_hashtags$No.tags <- as.integer(as.character(no_users_introducing_hashtags$No.tags))
 
-ggplot(data.frame(no_users_introducing_hashtags),aes(x=No.tags,y=No.users))+geom_point()+ggtitle("Number of Tags Introduced by Users")+xlab("Number of Tags Introduced")+ylab("Number of Users")
+ggplot(data.frame(no_users_introducing_hashtags),aes(x=No.tags,y=No.users))+
+  geom_point()+ggtitle("Number of Tags Introduced by Users")+
+  xlab("Number of Tags Introduced")+
+  ylab("Number of Users")
  
 # Add max time to hashtags_introduced and then compute difference (How can we visualize and control for date)
