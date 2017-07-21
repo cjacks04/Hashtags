@@ -2,20 +2,21 @@
 # Philip Lee and Corey Jackson 2017
 
 # Load Libraries
-install.packages("plyr", dependencies = TRUE)
+#install.packages("plyr", dependencies = TRUE)
 library(plyr)
-install.packages("ggplot2")
+#install.packages("ggplot2")
 library(ggplot2)
-install.packages("data.table")
+#install.packages("data.table")
 library(data.table)
-install.packages("lme4")
+#install.packages("lme4")
 library(lme4)
-install.packages("reshape2")
+#install.packages("reshape2")
 library(reshape2)
 
 # Import hashtag dataset
 # File is here: https://www.dropbox.com/sh/5gl91pgxfwa9k4k/AAAO-OSR0HpOvXuN4LSffJ-0a?dl=0  Only you can dw on local machine
 hashtags <- read.csv("~/Documents/Academic/School/REU/hashtags/03/hashtags_format_2017-07-14.csv", header=TRUE, sep=",")
+#hashtags <- read.csv("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Dataset/hashtags_format.csv", header=TRUE, sep=",")
 
 hashtags$tag <- as.character(hashtags$tag)
 hashtags$user <- as.character(hashtags$user)
