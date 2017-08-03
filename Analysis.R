@@ -60,7 +60,7 @@ hashtag_population_week$week.no <- as.integer(as.Date(paste(hashtag_population_w
 hashtag_population_week$week.no <- (hashtag_population_week$week.no - min(hashtag_population_week$week.no) + 7)/7
 hashtag_population_week <- hashtag_population_week[with(hashtag_population_week, order(tag, week.no)), ]
 hashtag_population_week$week.no <- ave(hashtag_population_week$week.no, hashtag_population_week$tag, FUN = function(x) c(1, diff(x)))
-hashtag_population_week[,week.no := cumsum(week.no), by = list(tag)]
+hashtag_population_week[,week.no:=cumsum(week.no), by=list(tag)]
 
 #remove(hashtags,hashtags_introduced)
 
@@ -75,14 +75,15 @@ View(ddply(hashtag_population, ~tag, summarize, intro.month=substring(min(first.
 # Create visualizations: 
 # 1 Hashtags and occcassions used (histogram)
 hashtag_occasions <- data.table(table(table(hashtag_population$tag)))
-names(hashtag_occasions) <- c("No.tags", "frequency")
+names(hashtag_occasions) <- c("frequency", "No.tags")
 hashtag_occasions$No.tags <- as.integer(hashtag_occasions$No.tags)
 
-ggplot(hashtag_occasions, aes(x=No.tags,y=frequency))+
-    geom_point()+
-    ggtitle("Tag Usage")+
-    xlab("Frequency of Tag Usage")+
-    ylab("Count")+theme(axis.text.x=element_text(angle=90))
+ggplot(hashtag_occasions, aes(x=frequency,y=No.tags))+
+  geom_bar(stat="identity")+
+  ggtitle("Tag Usage")+
+  xlab("Frequency of Tag Usage")+
+  ylab("Number of Tags")+
+  theme(axis.text.x=element_text(angle=90))
 
 # 2 Growth chart showing the number of tags over time. x could be any measure of time
 hashtag_weekly_growth <- data.table(table(hashtag_population$week))
@@ -90,22 +91,49 @@ names(hashtag_weekly_growth) <- c("week", "frequency")
 hashtag_weekly_growth[, cumulative := cumsum(frequency)]
 
 ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+
-  geom_point()+ggtitle("Weekly Hahstag Growth")+
+  geom_point()+
+  ggtitle("Weekly Hashtag Growth")+
   xlab("Week")+
-  ylab("Cumulative Uses of Tags")+
+  ylab("Total Tags")+
   theme(axis.text.x=element_text(angle=90))
 
 # 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
 no_users_introducing_hashtags <- ddply(hashtag_population, ~tag, summarize,
                                        first.user=first(first.user))
-                                       
+
 no_users_introducing_hashtags <- data.frame(table(table(no_users_introducing_hashtags$first.user)))
 names(no_users_introducing_hashtags) <- c("No.tags","No.users")
 no_users_introducing_hashtags$No.tags <- as.integer(as.character(no_users_introducing_hashtags$No.tags))
 
-ggplot(data.frame(no_users_introducing_hashtags),aes(x=No.tags,y=No.users))+
-  geom_point()+ggtitle("Number of Tags Introduced by Users")+
+ggplot(data.frame(no_users_introducing_hashtags), aes(x=No.tags,y=No.users))+
+  geom_bar(stat="identity")+
+  ggtitle("Number of Tags Introduced by Users")+
   xlab("Number of Tags Introduced")+
   ylab("Number of Users")
  
 # Add max time to hashtags_introduced and then compute difference (How can we visualize and control for date)
+hashtags_introduced <- merge(hashtags_introduced,
+                             ddply(hashtags, ~tag, summarize, last.use=max(time)),
+                             by=c("tag"))
+
+# Remove the following tags since they are already glitch classes: "BLIP","WHISTLE","NONEOFTHEABOVE","POWERLINE60HZ","KOIFISH","VIOLINMODEHARMONIC","CHIRP","LOWFREQUENCYBURST","NOGLITCH","SCATTEREDLIGHT","HELIX","LIGHTMODULATION","LOWFREQUENCYLINE","PAIREDDOVES","AIRCOMPRESSOR50HZ","REPEATINGBLIPS","SCRATCHY","TOMTE","WANDERINGLINE","EXTREMELYLOUD"
+hashtag_population_noclass <- hashtag_population[hashtag_population$tag!="blip"&
+                          hashtag_population$tag!="whistle"&
+                          hashtag_population$tag!="noneoftheabove"&
+                          hashtag_population$tag!="powerline60hz"&
+                          hashtag_population$tag!="koifish"&
+                          hashtag_population$tag!="violinmodeharmonic"&
+                          hashtag_population$tag!="chirp"&
+                          hashtag_population$tag!="lowfrequencyburst"&
+                          hashtag_population$tag!="noglitch"&
+                          hashtag_population$tag!="scatteredlight"&
+                          hashtag_population$tag!="helix"&
+                          hashtag_population$tag!="lightmodulation"&
+                          hashtag_population$tag!="lowfrequencyline"&
+                          hashtag_population$tag!="paireddoves"&
+                          hashtag_population$tag!="aircompressor50hz"&
+                          hashtag_population$tag!="repeatingblips"&
+                          hashtag_population$tag!="scratchy"&
+                          hashtag_population$tag!="tomte"&
+                          hashtag_population$tag!="wanderingline"&
+                          hashtag_population$tag!="extremelyloud",]
