@@ -30,6 +30,9 @@ hashtags$type <- as.character(hashtags$type); hashtags$type[is.na(hashtags$type)
 hashtags$taggable_id[is.na(hashtags$taggable_id)] <- "0000000"
 hashtags$array.index <- hashtags$id <- hashtags$user_id <- hashtags$type <- hashtags$comment_id <- hashtags$taggable_id <- NULL
 
+# convert all tags to same case
+hashtags$tag2 <-  tolower(hashtags$tag)
+
 # Create dataframe to get columns unique tag, date of first use, user_name, use count
 hashtags_introduced <- ddply(hashtags, c("tag"), summarize, 
                              first.use=min(time), 
