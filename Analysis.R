@@ -144,7 +144,7 @@ hashtags_introduced <- merge(hashtags_introduced,
 hashtag_population_fw <- data.table(table(hashtag_population$tag,
                                           as.integer(hashtag_population$date)))
 names(hashtag_population_fw) <- c("tag","day.no","total")
-hashtag_population_fw<-hashtag_population_fw[hashtag_population_fw$total!=0,]
+hashtag_population_fw <- hashtag_population_fw[hashtag_population_fw$total!=0,]
 hashtag_population_fw <- hashtag_population_fw[with(hashtag_population_fw,
                                                     order(tag, day.no)), ]
 hashtag_population_fw$day.no <- ave(as.integer(hashtag_population_fw$day.no),
@@ -152,12 +152,19 @@ hashtag_population_fw$day.no <- ave(as.integer(hashtag_population_fw$day.no),
                                     FUN=function(x) c(1, diff(x)))
 hashtag_population_fw[,day.no:=cumsum(day.no), by=list(tag)]
 hashtag_population_fw <- data.frame(hashtag_population_fw[hashtag_population_fw$day.no <= 16])
+hashtag_population_fw_once <- data.frame(once=table(tag=hashtag_population_fw$tag)==1)
+hashtag_population_fw_once$tag <- row.names(hashtag_population_fw_once)
+hashtag_population_fw_once <- hashtag_population_fw_once[hashtag_population_fw_once$once!=1,]
+hashtag_population_fw_once$once <- NULL
+hashtag_population_fw <- merge(hashtag_population_fw,hashtag_population_fw_once,
+                               by="tag")
 for(t in unique(hashtag_population_fw$day.no)){
   hashtag_population_fw[ifelse(nchar(t)==1,paste("D.0",t,sep=""),paste("D.",t,sep=""))] <-
     ifelse(hashtag_population_fw$day.no==t,hashtag_population_fw$total,0)}
 hashtag_population_fw$day.no <- hashtag_population_fw$total <- NULL
 hashtag_population_fw <- hashtag_population_fw[,order(colnames(hashtag_population_fw))]
 hashtag_population_fw <- aggregate(. ~tag, data=hashtag_population_fw, sum)
+remove(hashtag_population_fw_once)
 
 # Count the tag use for the first month by each week (T.01 ~ T.04)
 hashtag_population_om <- data.table(table(hashtag_population$tag,
@@ -166,14 +173,21 @@ names(hashtag_population_om) <- c("tag","week","total")
 hashtag_population_om <- hashtag_population_om[hashtag_population_om$total!=0,]
 hashtag_population_om$week.no <- as.integer(as.Date(paste(hashtag_population_om$week,1,sep="-"), "%Y-%U-%u", origin="min(hashtag_population$date)"))
 hashtag_population_om <- hashtag_population_om[with(hashtag_population_om,
-                                                    order(tag, week.no)), ]
+                                                    order(tag, week.no)),]
 hashtag_population_om$week.no <- (hashtag_population_om$week.no - min(hashtag_population_om$week.no) + 7)/7
 hashtag_population_om$week.no <- ave(hashtag_population_om$week.no, hashtag_population_om$tag, FUN=function(x) c(1, diff(x)))
 hashtag_population_om[,week.no:=cumsum(week.no), by=list(tag)]
 hashtag_population_om <- data.frame(hashtag_population_om[hashtag_population_om$week.no <= 4])
+hashtag_population_om_once <- data.frame(once=table(tag=hashtag_population_om$tag)==1)
+hashtag_population_om_once$tag <- row.names(hashtag_population_om_once)
+hashtag_population_om_once <- hashtag_population_om_once[hashtag_population_om_once$once!=1,]
+hashtag_population_om_once$once <- NULL
+hashtag_population_om <- merge(hashtag_population_om,hashtag_population_om_once,
+                               by="tag")
 for(t in unique(hashtag_population_om$week.no)){
   hashtag_population_om[ifelse(nchar(t)==1,paste("T.0",t,sep=""),paste("T.",t,sep=""))] <-
     ifelse(hashtag_population_om$week.no==t,hashtag_population_om$total,0)}
 hashtag_population_om$week <- hashtag_population_om$week.no <- hashtag_population_om$total <- NULL
 hashtag_population_om <- hashtag_population_om[,order(colnames(hashtag_population_om))]
 hashtag_population_om <- aggregate(. ~tag, data=hashtag_population_om, sum)
+remove(hashtag_population_om_once)
