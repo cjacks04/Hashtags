@@ -2,7 +2,7 @@
 # Philip Lee and Corey Jackson 2017
 
 # Load Libraries
-#install.packages("plyr", dependencies = TRUE)
+#install.packages("plyr", dependencies=TRUE)
 library(plyr)
 #install.packages("ggplot2")
 library(ggplot2)
@@ -15,8 +15,7 @@ library(reshape2)
 
 # Import hashtag dataset
 # File is here: https://www.dropbox.com/sh/5gl91pgxfwa9k4k/AAAO-OSR0HpOvXuN4LSffJ-0a?dl=0  Only you can dw on local machine
-hashtags <- read.csv("~/Documents/Academic/School/REU/hashtags/03/hashtags_format_2017-07-14.csv", header=TRUE, sep=",")
-#hashtags <- read.csv("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Dataset/hashtags_format.csv", header=TRUE, sep=",")
+hashtags <- read.csv("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Dataset/hashtags_format.csv", header=TRUE, sep=",")
 
 hashtags$tag <- as.character(hashtags$tag)
 hashtags$user <- as.character(hashtags$user)
@@ -30,8 +29,30 @@ hashtags$type <- as.character(hashtags$type); hashtags$type[is.na(hashtags$type)
 hashtags$taggable_id[is.na(hashtags$taggable_id)] <- "0000000"
 hashtags$array.index <- hashtags$id <- hashtags$user_id <- hashtags$type <- hashtags$comment_id <- hashtags$taggable_id <- NULL
 
-# convert all tags to same case
-hashtags$tag2 <-  tolower(hashtags$tag)
+# Convert all hashtags to lowercase
+hashtags$tag <- tolower(hashtags$tag)
+
+# Remove the following tags since they are already glitch classes: "BLIP","WHISTLE","NONEOFTHEABOVE","POWERLINE60HZ","KOIFISH","VIOLINMODEHARMONIC","CHIRP","LOWFREQUENCYBURST","NOGLITCH","SCATTEREDLIGHT","HELIX","LIGHTMODULATION","LOWFREQUENCYLINE","PAIREDDOVES","AIRCOMPRESSOR50HZ","REPEATINGBLIPS","SCRATCHY","TOMTE","WANDERINGLINE","EXTREMELYLOUD"
+hashtags <- hashtags[hashtags$tag!="blip"&
+                               hashtags$tag!="whistle"&
+                               hashtags$tag!="noneoftheabove"&
+                               hashtags$tag!="powerline60hz"&
+                               hashtags$tag!="koifish"&
+                               hashtags$tag!="violinmodeharmonic"&
+                               hashtags$tag!="chirp"&
+                               hashtags$tag!="lowfrequencyburst"&
+                               hashtags$tag!="noglitch"&
+                               hashtags$tag!="scatteredlight"&
+                               hashtags$tag!="helix"&
+                               hashtags$tag!="lightmodulation"&
+                               hashtags$tag!="lowfrequencyline"&
+                               hashtags$tag!="paireddoves"&
+                               hashtags$tag!="aircompressor50hz"&
+                               hashtags$tag!="repeatingblips"&
+                               hashtags$tag!="scratchy"&
+                               hashtags$tag!="tomte"&
+                               hashtags$tag!="wanderingline"&
+                               hashtags$tag!="extremelyloud",]
 
 # Create dataframe to get columns unique tag, date of first use, user_name, use count
 hashtags_introduced <- ddply(hashtags, c("tag"), summarize, 
@@ -62,7 +83,7 @@ hashtag_population_week <- data.table(ddply(hashtag_population, ~tag, summarize,
 hashtag_population_week$week.no <- as.integer(as.Date(paste(hashtag_population_week$week,1,sep="-"), "%Y-%U-%u", origin="min(hashtag_population$date)"))
 hashtag_population_week$week.no <- (hashtag_population_week$week.no - min(hashtag_population_week$week.no) + 7)/7
 hashtag_population_week <- hashtag_population_week[with(hashtag_population_week, order(tag, week.no)), ]
-hashtag_population_week$week.no <- ave(hashtag_population_week$week.no, hashtag_population_week$tag, FUN = function(x) c(1, diff(x)))
+hashtag_population_week$week.no <- ave(hashtag_population_week$week.no, hashtag_population_week$tag, FUN=function(x) c(1, diff(x)))
 hashtag_population_week[,week.no:=cumsum(week.no), by=list(tag)]
 
 #remove(hashtags,hashtags_introduced)
@@ -119,24 +140,40 @@ hashtags_introduced <- merge(hashtags_introduced,
                              ddply(hashtags, ~tag, summarize, last.use=max(time)),
                              by=c("tag"))
 
-# Remove the following tags since they are already glitch classes: "BLIP","WHISTLE","NONEOFTHEABOVE","POWERLINE60HZ","KOIFISH","VIOLINMODEHARMONIC","CHIRP","LOWFREQUENCYBURST","NOGLITCH","SCATTEREDLIGHT","HELIX","LIGHTMODULATION","LOWFREQUENCYLINE","PAIREDDOVES","AIRCOMPRESSOR50HZ","REPEATINGBLIPS","SCRATCHY","TOMTE","WANDERINGLINE","EXTREMELYLOUD"
-hashtag_population_noclass <- hashtag_population[hashtag_population$tag!="blip"&
-                          hashtag_population$tag!="whistle"&
-                          hashtag_population$tag!="noneoftheabove"&
-                          hashtag_population$tag!="powerline60hz"&
-                          hashtag_population$tag!="koifish"&
-                          hashtag_population$tag!="violinmodeharmonic"&
-                          hashtag_population$tag!="chirp"&
-                          hashtag_population$tag!="lowfrequencyburst"&
-                          hashtag_population$tag!="noglitch"&
-                          hashtag_population$tag!="scatteredlight"&
-                          hashtag_population$tag!="helix"&
-                          hashtag_population$tag!="lightmodulation"&
-                          hashtag_population$tag!="lowfrequencyline"&
-                          hashtag_population$tag!="paireddoves"&
-                          hashtag_population$tag!="aircompressor50hz"&
-                          hashtag_population$tag!="repeatingblips"&
-                          hashtag_population$tag!="scratchy"&
-                          hashtag_population$tag!="tomte"&
-                          hashtag_population$tag!="wanderingline"&
-                          hashtag_population$tag!="extremelyloud",]
+# Count the tag use for the first two weeks by each day (D.01 ~ D.16)
+hashtag_population_fw <- data.table(table(hashtag_population$tag,
+                                          as.integer(hashtag_population$date)))
+names(hashtag_population_fw) <- c("tag","day.no","total")
+hashtag_population_fw<-hashtag_population_fw[hashtag_population_fw$total!=0,]
+hashtag_population_fw <- hashtag_population_fw[with(hashtag_population_fw,
+                                                    order(tag, day.no)), ]
+hashtag_population_fw$day.no <- ave(as.integer(hashtag_population_fw$day.no),
+                                    hashtag_population_fw$tag,
+                                    FUN=function(x) c(1, diff(x)))
+hashtag_population_fw[,day.no:=cumsum(day.no), by=list(tag)]
+hashtag_population_fw <- data.frame(hashtag_population_fw[hashtag_population_fw$day.no <= 16])
+for(t in unique(hashtag_population_fw$day.no)){
+  hashtag_population_fw[ifelse(nchar(t)==1,paste("D.0",t,sep=""),paste("D.",t,sep=""))] <-
+    ifelse(hashtag_population_fw$day.no==t,hashtag_population_fw$total,0)}
+hashtag_population_fw$day.no <- hashtag_population_fw$total <- NULL
+hashtag_population_fw <- hashtag_population_fw[,order(colnames(hashtag_population_fw))]
+hashtag_population_fw <- aggregate(. ~tag, data=hashtag_population_fw, sum)
+
+# Count the tag use for the first month by each week (T.01 ~ T.04)
+hashtag_population_om <- data.table(table(hashtag_population$tag,
+                                          format(hashtag_population$date,"%Y-%U")))
+names(hashtag_population_om) <- c("tag","week","total")
+hashtag_population_om <- hashtag_population_om[hashtag_population_om$total!=0,]
+hashtag_population_om$week.no <- as.integer(as.Date(paste(hashtag_population_om$week,1,sep="-"), "%Y-%U-%u", origin="min(hashtag_population$date)"))
+hashtag_population_om <- hashtag_population_om[with(hashtag_population_om,
+                                                    order(tag, week.no)), ]
+hashtag_population_om$week.no <- (hashtag_population_om$week.no - min(hashtag_population_om$week.no) + 7)/7
+hashtag_population_om$week.no <- ave(hashtag_population_om$week.no, hashtag_population_om$tag, FUN=function(x) c(1, diff(x)))
+hashtag_population_om[,week.no:=cumsum(week.no), by=list(tag)]
+hashtag_population_om <- data.frame(hashtag_population_om[hashtag_population_om$week.no <= 4])
+for(t in unique(hashtag_population_om$week.no)){
+  hashtag_population_om[ifelse(nchar(t)==1,paste("T.0",t,sep=""),paste("T.",t,sep=""))] <-
+    ifelse(hashtag_population_om$week.no==t,hashtag_population_om$total,0)}
+hashtag_population_om$week <- hashtag_population_om$week.no <- hashtag_population_om$total <- NULL
+hashtag_population_om <- hashtag_population_om[,order(colnames(hashtag_population_om))]
+hashtag_population_om <- aggregate(. ~tag, data=hashtag_population_om, sum)
