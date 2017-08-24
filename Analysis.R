@@ -111,18 +111,31 @@ hashtag_weekly_growth <- data.table(table(hashtag_population$week))
 names(hashtag_weekly_growth) <- c("week", "frequency")
 hashtag_weekly_growth[, cumulative := cumsum(frequency)]
 
+ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+
+  geom_point()+
+  ggtitle("Weekly Hashtag Growth")+
+  xlab("Week")+
+  ylab("Total Tags")+
+  theme(axis.text.x=element_text(angle=90))
 
+
+# Daily Tags
 hashtag_population$Date <- as.Date(hashtag_population$time)
+
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
+pdf("TagsContributed_Daily.pdf", height=5, width=11)
 ggplot(data=hashtag_population, aes(x=Date)) + 
         geom_line(stat="count") +
         xlab("Week")+
         ylab("Tags Contributed")+
-        scale_x_date(breaks=date_breaks("1 month"), labels=date_format("%Y-%m"),limits = as.Date(c('2016-09-20','2017-07-14')))+
+        scale_x_date(breaks=date_breaks("1 month"), 
+          labels=date_format("%Y-%m"),
+          limits = as.Date(c('2016-09-20','2017-07-14')))+
         theme_bw() +
         theme(
           axis.text.x=element_text(angle=90,size = 12)
       ) 
-
+dev.off()
 
 # 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
 no_users_introducing_hashtags <- ddply(hashtag_population, ~tag, summarize,
@@ -143,16 +156,59 @@ hashtags_introduced <- merge(hashtags_introduced,
                              ddply(hashtags, ~tag, summarize, last.use=max(time)),
                              by=c("tag"))
 
+# First Tags
 hashtags_introduced$Date <- as.Date(hashtags_introduced$first.use)
+hashtags_introduced <- hashtags_introduced[complete.cases(hashtags_introduced[ ,6]),]
+
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
+pdf("NewTags_Daily.pdf", height=5, width=11)
 ggplot(data=hashtags_introduced, aes(x=Date)) + 
         geom_line(stat="count") +
         xlab("Week")+
         ylab("New Tags")+
-        scale_x_date(breaks=date_breaks("1 month"), labels=date_format("%Y-%m"),limits = as.Date(c('2016-09-20','2017-07-14')))+
+        scale_x_date(breaks=date_breaks("1 month"), 
+          labels=date_format("%Y-%m"),
+          limits = as.Date(c('2016-09-20','2017-07-14')))+
         theme_bw() +
         theme(
           axis.text.x=element_text(angle=90,size = 12)
       )
+dev.off()
+
+# Relationship between tags and users
+tags_users <- ddply(hashtag_population, c("Date"), summarize,
+                        users = length(unique(user))),
+                        tags = length(tag)
+                        )
+tags_users.m <- melt(tags_users, id.var=c("Date"))
+tags_users_range <- tags_users[which(tags_users$Date >= '2016-09-20'),]
+
+
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
+pdf("Tags_User_line.pdf", height=5, width=11)
+ggplot(tags_users_range, aes(x = Date)) +
+     geom_line(aes(y = users, colour = "Users")) +
+     geom_line(aes(y = tags, colour = "Tags")) + 
+     scale_y_continuous(sec.axis = sec_axis(~., name = "Number of Tags")) +
+     scale_x_date(
+              breaks=date_breaks("1 month"), 
+              labels=date_format("%Y-%m")) +
+     labs(y = " Number of Users",
+                x = "Date",
+                colour = "Variable") + 
+     theme_bw() +
+     theme(axis.text.x=element_text(angle=90,size = 12)) + 
+     theme(legend.position = c(0.8, 0.9))
+dev.off()
+
+pdf("Tags_User_point.pdf", height=5, width=11)
+ggplot(data=tags_users,aes(x=users, y=tags)) +
+    geom_point(shape=1) +    # Use hollow circles
+    geom_smooth(method=lm) + 
+    labs(y = "Tags Contributed",
+         x = "Users")
+dev.off()
+  
 
 # Count the tag use for the first two weeks by each day (D.01 ~ D.16)
 hashtag_population_fw <- data.table(table(hashtag_population$tag,
