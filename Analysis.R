@@ -130,7 +130,7 @@ ggplot(data=hashtag_population, aes(x=Date)) +
         ylab("Tags Contributed")+
         scale_x_date(breaks=date_breaks("1 month"), 
           labels=date_format("%Y-%m"),
-          limits = as.Date(c('2016-09-20','2017-07-14')))+
+          limits = as.Date(c('2016-10-12','2017-07-14')))+
         theme_bw() +
         theme(
           axis.text.x=element_text(angle=90,size = 12)
@@ -168,7 +168,7 @@ ggplot(data=hashtags_introduced, aes(x=Date)) +
         ylab("New Tags")+
         scale_x_date(breaks=date_breaks("1 month"), 
           labels=date_format("%Y-%m"),
-          limits = as.Date(c('2016-09-20','2017-07-14')))+
+          limits = as.Date(c('2016-10-12','2017-07-14')))+
         theme_bw() +
         theme(
           axis.text.x=element_text(angle=90,size = 12)
@@ -181,7 +181,7 @@ tags_users <- ddply(hashtag_population, c("Date"), summarize,
                         tags = length(tag)
                         )
 tags_users.m <- melt(tags_users, id.var=c("Date"))
-tags_users_range <- tags_users[which(tags_users$Date >= '2016-09-20'),]
+tags_users_range <- tags_users[which(tags_users$Date >= '2016-10-12'),]
 
 
 setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
