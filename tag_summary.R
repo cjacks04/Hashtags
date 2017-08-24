@@ -27,8 +27,8 @@ library(lme4)
 
 
 # H2 Tags introduced by authority sources (i.e., Power Users, moderators. You should create binary in dataset. In the example below I've named it type) have significantly greater growth curves.
-m2.base <- lmer(use ~  time + users + type + (1 | tag), data=hashtags, REML=F)
-m2.type <- lmer(use ~  time + users + (1 | tag), data=hashtags, REML=F)
+m2.base <- lmer(value ~  1 + (1 | tag), data=hashtag_population_om.l, REML=F)
+m2.type <- lmer(value ~  variable + (1 | tag), data=hashtag_population_om.l, REML=F)
 anova(m2.base,m2.type)
 
 # H1 Tags accompanied with use materials (e.g., Talk pages describing use) have significantly greater growth curves than those with no Talk pages.
