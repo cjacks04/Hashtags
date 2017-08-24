@@ -2,16 +2,13 @@
 # Philip Lee and Corey Jackson 2017
 
 # Load Libraries
-#install.packages("plyr", dependencies=TRUE)
 library(plyr)
-#install.packages("ggplot2")
 library(ggplot2)
-#install.packages("data.table")
 library(data.table)
-#install.packages("lme4")
 library(lme4)
-#install.packages("reshape2")
 library(reshape2)
+library(scales)
+
 
 # Import hashtag dataset
 # File is here: https://www.dropbox.com/sh/5gl91pgxfwa9k4k/AAAO-OSR0HpOvXuN4LSffJ-0a?dl=0  Only you can dw on local machine
@@ -114,12 +111,18 @@ hashtag_weekly_growth <- data.table(table(hashtag_population$week))
 names(hashtag_weekly_growth) <- c("week", "frequency")
 hashtag_weekly_growth[, cumulative := cumsum(frequency)]
 
-ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+
-  geom_point()+
-  ggtitle("Weekly Hashtag Growth")+
-  xlab("Week")+
-  ylab("Total Tags")+
-  theme(axis.text.x=element_text(angle=90))
+
+hashtag_population$Date <- as.Date(hashtag_population$time)
+ggplot(data=hashtag_population, aes(x=Date)) + 
+        geom_line(stat="count") +
+        xlab("Week")+
+        ylab("Tags Contributed")+
+        scale_x_date(breaks=date_breaks("1 month"), labels=date_format("%Y-%m"),limits = as.Date(c('2016-09-20','2017-07-14')))+
+        theme_bw() +
+        theme(
+          axis.text.x=element_text(angle=90,size = 12)
+      ) 
+
 
 # 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
 no_users_introducing_hashtags <- ddply(hashtag_population, ~tag, summarize,
@@ -139,6 +142,17 @@ ggplot(data.frame(no_users_introducing_hashtags), aes(x=No.tags,y=No.users))+
 hashtags_introduced <- merge(hashtags_introduced,
                              ddply(hashtags, ~tag, summarize, last.use=max(time)),
                              by=c("tag"))
+
+hashtags_introduced$Date <- as.Date(hashtags_introduced$first.use)
+ggplot(data=hashtags_introduced, aes(x=Date)) + 
+        geom_line(stat="count") +
+        xlab("Week")+
+        ylab("New Tags")+
+        scale_x_date(breaks=date_breaks("1 month"), labels=date_format("%Y-%m"),limits = as.Date(c('2016-09-20','2017-07-14')))+
+        theme_bw() +
+        theme(
+          axis.text.x=element_text(angle=90,size = 12)
+      )
 
 # Count the tag use for the first two weeks by each day (D.01 ~ D.16)
 hashtag_population_fw <- data.table(table(hashtag_population$tag,
