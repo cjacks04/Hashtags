@@ -244,7 +244,7 @@ hashtag_population_fw_ex_once_cumul <- data.frame(hashtag_population_fw_ex_once[
 rownames(hashtag_population_fw_ex_once_cumul) <- NULL
 hashtag_population_fw_ex_once_cumul.melt <- melt(hashtag_population_fw_ex_once_cumul,id.vars=("tag"))
 colnames(hashtag_population_fw_ex_once_cumul.melt)[c(2,3)] <- c("time","cumul")
-hashtag_population_fw_date <- data.table(ddply(hashtags_fw,~tag,summarize,
+hashtag_population_fw_date <- data.table(ddply(hashtag_population_fw,~tag,summarize,
                                                date=seq.Date(from=min(date),
                                                              by="day",
                                                              length.out=length(hashtag_population_fw_ex_once)-1)),
