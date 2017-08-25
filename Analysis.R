@@ -179,8 +179,7 @@ dev.off()
 # Relationship between tags and users
 tags_users <- ddply(hashtag_population, c("Date"), summarize,
                         users = length(unique(user)),
-                        tags = length(tag)
-                        )
+                        tags = length(tag))
 tags_users.m <- melt(tags_users, id.var=c("Date"))
 tags_users_range <- tags_users[which(tags_users$Date >= '2016-10-12'),]
 
@@ -237,7 +236,6 @@ for(t in unique(hashtag_population_fw_ex_once$day.no)){
   hashtag_population_fw_ex_once[ifelse(nchar(t)==1,paste("D.0",t,sep=""),paste("D.",t,sep=""))] <-
     ifelse(hashtag_population_fw_ex_once$day.no==t,hashtag_population_fw_ex_once$total,0)}
 hashtag_population_fw_ex_once$day.no <- hashtags_fw_ex_once$total <- hashtag_population_fw_ex_once$date <- NULL
-                                    
 hashtag_population_fw_ex_once <- hashtag_population_fw_ex_once[,order(colnames(hashtag_population_fw_ex_once))]
 hashtag_population_fw_ex_once <- aggregate(. ~tag, data=hashtag_population_fw_ex_once, sum)
 hashtag_population_fw_ex_once_cumul <- data.frame(t(hashtag_population_fw_ex_once[-T]))
