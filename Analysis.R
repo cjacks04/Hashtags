@@ -24,6 +24,7 @@ hashtags$X <- hashtags$document.id <- hashtags$hour <- hashtags$created_at <- NU
 hashtags$time <- as.POSIXct(as.character(hashtags$time), format="%Y-%m-%d %H:%M:%S")
 hashtags$type <- as.character(hashtags$type); hashtags$type[is.na(hashtags$type)] <- "Other"
 hashtags$taggable_id[is.na(hashtags$taggable_id)] <- "0000000"
+hashtags$week.of <- as.Date(paste(format(hashtags$date,"%Y-%U"),1,sep="-"),"%Y-%U-%u")
 hashtags$array.index <- hashtags$id <- hashtags$user_id <- hashtags$type <- hashtags$comment_id <- hashtags$taggable_id <- NULL
 
 # Convert all hashtags to lowercase
