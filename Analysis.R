@@ -8,7 +8,7 @@ library(data.table)
 library(lme4)
 library(reshape2)
 library(scales)
-
+library(plotly)
 
 # Import hashtag dataset
 # File is here: https://www.dropbox.com/sh/5gl91pgxfwa9k4k/AAAO-OSR0HpOvXuN4LSffJ-0a?dl=0  Only you can dw on local machine
@@ -123,7 +123,8 @@ ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+
 # Daily Tags
 hashtag_population$Date <- as.Date(hashtag_population$time)
 
-setwd("~/~/Documents/Academic/School/REU/hashtags/03/Figures")
+#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
 pdf("TagsContributed_Daily.pdf", height=5, width=11)
 ggplot(data=hashtag_population, aes(x=Date)) + 
   geom_line(stat="count") +
@@ -161,10 +162,11 @@ hashtags_introduced <- merge(hashtags_introduced,
 hashtags_introduced$Date <- as.Date(hashtags_introduced$first.use)
 hashtags_introduced <- hashtags_introduced[complete.cases(hashtags_introduced[ ,6]),]
 
-setwd("~/~/Documents/Academic/School/REU/hashtags/03/Figures")
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
+#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
 pdf("NewTags_Daily.pdf", height=5, width=11)
 ggplot(data=hashtags_introduced, aes(x=Date)) + 
-  geom_line(stat="count") +
+  geom_bar(stat="count") +
   xlab("Week")+
   ylab("New Tags")+
   scale_x_date(breaks=date_breaks("1 month"), 
@@ -183,8 +185,8 @@ tags_users <- ddply(hashtag_population, c("Date"), summarize,
 tags_users.m <- melt(tags_users, id.var=c("Date"))
 tags_users_range <- tags_users[which(tags_users$Date >= '2016-10-12'),]
 
-
-setwd("~/~/Documents/Academic/School/REU/hashtags/03/Figures")
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
+#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
 pdf("Tags_User_line.pdf", height=5, width=11)
 ggplot(tags_users_range, aes(x = Date)) +
   geom_line(aes(y = users, colour = "Users")) +
@@ -301,6 +303,44 @@ hashtag_population_fw_ex_once_cumul.melt <- hashtag_population_fw_ex_once_cumul.
 hashtag_population_fw_ex_once.melt <- hashtag_population_fw_ex_once.melt[with(hashtag_population_fw_ex_once.melt,order(tag,date)),]
 hashtag_population_fw_ex_once_cumul.melt[is.na(hashtag_population_fw_ex_once_cumul.melt)]<-0
 hashtag_population_fw_ex_once.melt[is.na(hashtag_population_fw_ex_once.melt)]<-0
+
+
+hashtag_population_fw_ex_once_cumul.melt.2 <- merge(hashtag_population_fw_ex_once_cumul.melt,hashtag_population_fw_ex_once.melt[,c("tag","time","count")],by=c("tag","time"))
+hashtag_population_fw_ex_once_cumul.melt.2$tagfrequency <- hashtag_population_fw_ex_once_cumul.melt.2$count/hashtag_population_fw_ex_once_cumul.melt.2$project.tags
+hashtag_population_fw_ex_once_cumul.melt.2$userfrequency <- hashtag_population_fw_ex_once_cumul.melt.2$unique.users /hashtag_population_fw_ex_once_cumul.melt.2$tag_users
+
+### Visualizations for cumulative 
+setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
+#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
+pdf("Popular_Growth.pdf", height=5, width=11)
+ggplot(subset(hashtag_population_fw_ex_once_cumul.melt,tag %in% c("1080line","aeroline","anythingcanhappenchirp","bud","jewel","lavalamp","lfbhelix","nettedband","snowmanburst","submarine"))
+  , aes(x = time, y=cumul,group=tag, colour=tag)) +
+  geom_line(aes(linetype = tag)) +
+  labs(x = "Observation Period",
+       y = "Cumulative Use",
+       colour= "Tag Name") + 
+  theme_bw() +
+  guides(colour=FALSE) +
+  theme(axis.text.x=element_text(angle=90,size = 12)
+    )
+dev.off()
+
+
+# 3D plot. Get  install.packages("plotly")
+plot_ly(hashtag_population_fw_ex_once_cumul.melt.2, x = ~unique.users, y = ~time, z = ~count) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Unique Users'),
+                     yaxis = list(title = 'Observation Period (Day)'),
+                     zaxis = list(title = 'Number of Tags')))
+
+
+plot_ly(hashtag_population_fw_ex_once_cumul.melt.2, x = ~time, z = ~count, y = ~tag, type = 'scatter3d', mode = 'lines') %>%
+add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Unique Users'),
+                     yaxis = list(title = 'Observation Period (Day)'),
+                     zaxis = list(title = 'Number of Tags')))
+
+# Summary stats...averages per period
 
 
 
