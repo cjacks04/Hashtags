@@ -31,26 +31,11 @@ hashtags$array.index <- hashtags$id <- hashtags$user_id <- hashtags$type <- hash
 hashtags$tag <- tolower(hashtags$tag)
 
 # Remove the following tags since they are already glitch classes: "BLIP","WHISTLE","NONEOFTHEABOVE","POWERLINE60HZ","KOIFISH","VIOLINMODEHARMONIC","CHIRP","LOWFREQUENCYBURST","NOGLITCH","SCATTEREDLIGHT","HELIX","LIGHTMODULATION","LOWFREQUENCYLINE","PAIREDDOVES","AIRCOMPRESSOR50HZ","REPEATINGBLIPS","SCRATCHY","TOMTE","WANDERINGLINE","EXTREMELYLOUD"
-hashtags <- hashtags[hashtags$tag!="blip"&
-                       hashtags$tag!="whistle"&
-                       hashtags$tag!="noneoftheabove"&
-                       hashtags$tag!="powerline60hz"&
-                       hashtags$tag!="koifish"&
-                       hashtags$tag!="violinmodeharmonic"&
-                       hashtags$tag!="chirp"&
-                       hashtags$tag!="lowfrequencyburst"&
-                       hashtags$tag!="noglitch"&
-                       hashtags$tag!="scatteredlight"&
-                       hashtags$tag!="helix"&
-                       hashtags$tag!="lightmodulation"&
-                       hashtags$tag!="lowfrequencyline"&
-                       hashtags$tag!="paireddoves"&
-                       hashtags$tag!="aircompressor50hz"&
-                       hashtags$tag!="repeatingblips"&
-                       hashtags$tag!="scratchy"&
-                       hashtags$tag!="tomte"&
-                       hashtags$tag!="wanderingline"&
-                       hashtags$tag!="extremelyloud",]
+Glitches = c("blip","whistle","noneoftheabove","powerline60hz","koifish","violinmodeharmonic","chirp","lowfrequencyburst","noglitch","scatteredlight","helix","lightmodulation","lowfrequencyline","paireddoves","aircompressor50hz","repeatingblips","scratchy","tomte","wanderingline","extremelyloud")
+
+known_hashtags <- hashtags[which(hashtags$tag %in% Glitches),]
+hashtags   <- hashtags[which(!hashtags$tag %in% Glitches),]
+                  
 
 # Create dataframe to get columns unique tag, date of first use, user_name, use count
 hashtags_introduced <- ddply(hashtags, c("tag"), summarize, 
@@ -68,7 +53,8 @@ hashtags_introduced <- hashtags_introduced[hashtags_introduced$use.count != 1,]
 hashtag_population <- ddply(hashtags, ~ tag, summarize, 
                             after.launch.date=min(date)>="2016/10/12", 
                             before.last.month=min(date)<=max(hashtags$date)-30)
-hashtag_population <- hashtag_population[hashtag_population$after.launch.date == 1 & hashtag_population$before.last.month == 1,]["tag"]
+#hashtag_population <- hashtag_population[hashtag_population$after.launch.date == 1 & hashtag_population$before.last.month == 1,]["tag"]
+hashtag_population <- hashtag_population[hashtag_population$before.last.month == 1,]["tag"]
 
 hashtag_population <- merge(hashtag_population, hashtags_introduced, 
                             by=c("tag"))
@@ -86,72 +72,6 @@ hashtag_population_week[,week.no:=cumsum(week.no), by=list(tag)]
 
 #remove(hashtags,hashtags_introduced)
 
-########## Dataset Descriptions ##########
-
-# How many unique tags, tags total, unique users, and year-months tags introduced. 
-sprintf("%d unique tags", length(unique(hashtag_population$tag))) # Returns number of unique tags: 979 tags
-sprintf("%d tags total", sum(length(hashtag_population$tag))) # Returns total number of tags: 14064 tags
-sprintf("%d unique users", length(unique(hashtag_population$user))) # Returns number of unique users: 429 users
-View(ddply(hashtag_population, ~tag, summarize, intro.month=substring(min(first.use),1,7)))
-
-# Create visualizations: 
-# 1 Hashtags and occcassions used (histogram)
-hashtag_occasions <- data.table(table(table(hashtag_population$tag)))
-names(hashtag_occasions) <- c("frequency", "No.tags")
-hashtag_occasions$No.tags <- as.integer(hashtag_occasions$No.tags)
-
-ggplot(hashtag_occasions, aes(x=frequency,y=No.tags))+
-  geom_bar(stat="identity")+
-  ggtitle("Tag Usage")+
-  xlab("Frequency of Tag Usage")+
-  ylab("Number of Tags")+
-  theme(axis.text.x=element_text(angle=90))
-
-# 2 Growth chart showing the number of tags over time. x could be any measure of time
-hashtag_weekly_growth <- data.table(table(hashtag_population$week))
-names(hashtag_weekly_growth) <- c("week", "frequency")
-hashtag_weekly_growth[, cumulative := cumsum(frequency)]
-
-ggplot(hashtag_weekly_growth, aes(x=week,y=cumulative))+
-  geom_point()+
-  ggtitle("Weekly Hashtag Growth")+
-  xlab("Week")+
-  ylab("Total Tags")+
-  theme(axis.text.x=element_text(angle=90))
-
-
-# Daily Tags
-hashtag_population$Date <- as.Date(hashtag_population$time)
-
-#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
-setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
-pdf("TagsContributed_Daily.pdf", height=5, width=11)
-ggplot(data=hashtag_population, aes(x=Date)) + 
-  geom_line(stat="count") +
-  xlab("Week")+
-  ylab("Tags Contributed")+
-  scale_x_date(breaks=date_breaks("1 month"), 
-               labels=date_format("%Y-%m"),
-               limits = as.Date(c('2016-10-12','2017-07-14')))+
-  theme_bw() +
-  theme(
-    axis.text.x=element_text(angle=90,size = 12)
-  ) 
-dev.off()
-
-# 3 No. tags introduced by users (histogram). Using hashtags_introduced simply plot of user to know N users contirbute 1 tag, N contribute 2 tags
-no_users_introducing_hashtags <- ddply(hashtag_population, ~tag, summarize,
-                                       first.user=first(first.user))
-
-no_users_introducing_hashtags <- data.frame(table(table(no_users_introducing_hashtags$first.user)))
-names(no_users_introducing_hashtags) <- c("No.tags","No.users")
-no_users_introducing_hashtags$No.tags <- as.integer(as.character(no_users_introducing_hashtags$No.tags))
-
-ggplot(data.frame(no_users_introducing_hashtags), aes(x=No.tags,y=No.users))+
-  geom_bar(stat="identity")+
-  ggtitle("Number of Tags Introduced by Users")+
-  xlab("Number of Tags Introduced")+
-  ylab("Number of Users")
 
 # Add max time to hashtags_introduced and then compute difference (How can we visualize and control for date)
 hashtags_introduced <- merge(hashtags_introduced,
@@ -161,55 +81,6 @@ hashtags_introduced <- merge(hashtags_introduced,
 # First Tags
 hashtags_introduced$Date <- as.Date(hashtags_introduced$first.use)
 hashtags_introduced <- hashtags_introduced[complete.cases(hashtags_introduced[ ,6]),]
-
-setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
-#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
-pdf("NewTags_Daily.pdf", height=5, width=11)
-ggplot(data=hashtags_introduced, aes(x=Date)) + 
-  geom_bar(stat="count") +
-  xlab("Week")+
-  ylab("New Tags")+
-  scale_x_date(breaks=date_breaks("1 month"), 
-               labels=date_format("%Y-%m"),
-               limits = as.Date(c('2016-10-12','2017-07-14')))+
-  theme_bw() +
-  theme(
-    axis.text.x=element_text(angle=90,size = 12)
-  )
-dev.off()
-
-# Relationship between tags and users
-tags_users <- ddply(hashtag_population, c("Date"), summarize,
-                    users = length(unique(user)),
-                    tags = length(tag))
-tags_users.m <- melt(tags_users, id.var=c("Date"))
-tags_users_range <- tags_users[which(tags_users$Date >= '2016-10-12'),]
-
-setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
-#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
-pdf("Tags_User_line.pdf", height=5, width=11)
-ggplot(tags_users_range, aes(x = Date)) +
-  geom_line(aes(y = users, colour = "Users")) +
-  geom_line(aes(y = tags, colour = "Tags")) + 
-  scale_y_continuous(sec.axis = sec_axis(~., name = "Number of Tags")) +
-  scale_x_date(
-    breaks=date_breaks("1 month"), 
-    labels=date_format("%Y-%m")) +
-  labs(y = " Number of Users",
-       x = "Date",
-       colour = "Variable") + 
-  theme_bw() +
-  theme(axis.text.x=element_text(angle=90,size = 12)) + 
-  theme(legend.position = c(0.8, 0.9))
-dev.off()
-
-pdf("Tags_User_point.pdf", height=5, width=11)
-ggplot(data=tags_users,aes(x=users, y=tags)) +
-  geom_point(shape=1) +    # Use hollow circles
-  geom_smooth(method=lm) + 
-  labs(y = "Tags Contributed",
-       x = "Users")
-dev.off()
 
 
 # Count the tag use for the first two weeks by each day (D.01 ~ D.16) -- hashtag_population
@@ -303,47 +174,6 @@ hashtag_population_fw_ex_once_cumul.melt <- hashtag_population_fw_ex_once_cumul.
 hashtag_population_fw_ex_once.melt <- hashtag_population_fw_ex_once.melt[with(hashtag_population_fw_ex_once.melt,order(tag,date)),]
 hashtag_population_fw_ex_once_cumul.melt[is.na(hashtag_population_fw_ex_once_cumul.melt)]<-0
 hashtag_population_fw_ex_once.melt[is.na(hashtag_population_fw_ex_once.melt)]<-0
-
-
-hashtag_population_fw_ex_once_cumul.melt.2 <- merge(hashtag_population_fw_ex_once_cumul.melt,hashtag_population_fw_ex_once.melt[,c("tag","time","count")],by=c("tag","time"))
-hashtag_population_fw_ex_once_cumul.melt.2$tagfrequency <- hashtag_population_fw_ex_once_cumul.melt.2$count/hashtag_population_fw_ex_once_cumul.melt.2$project.tags
-hashtag_population_fw_ex_once_cumul.melt.2$userfrequency <- hashtag_population_fw_ex_once_cumul.melt.2$unique.users /hashtag_population_fw_ex_once_cumul.melt.2$tag_users
-
-### Visualizations for cumulative 
-setwd("~/Dropbox/INSPIRE/REU Projects/Hashtag Use/Figures")
-#setwd("~/Documents/Academic/School/REU/hashtags/03/Figures")
-pdf("Popular_Growth.pdf", height=5, width=11)
-ggplot(subset(hashtag_population_fw_ex_once_cumul.melt,tag %in% c("1080line","aeroline","anythingcanhappenchirp","bud","jewel","lavalamp","lfbhelix","nettedband","snowmanburst","submarine"))
-  , aes(x = time, y=cumul,group=tag, colour=tag)) +
-  geom_line(aes(linetype = tag)) +
-  labs(x = "Observation Period",
-       y = "Cumulative Use",
-       colour= "Tag Name") + 
-  theme_bw() +
-  guides(colour=FALSE) +
-  theme(axis.text.x=element_text(angle=90,size = 12)
-    )
-dev.off()
-
-
-# 3D plot. Get  install.packages("plotly")
-plot_ly(hashtag_population_fw_ex_once_cumul.melt.2, x = ~unique.users, y = ~time, z = ~count) %>%
-  add_markers() %>%
-  layout(scene = list(xaxis = list(title = 'Unique Users'),
-                     yaxis = list(title = 'Observation Period (Day)'),
-                     zaxis = list(title = 'Number of Tags')))
-
-
-plot_ly(hashtag_population_fw_ex_once_cumul.melt.2, x = ~time, z = ~count, y = ~tag, type = 'scatter3d', mode = 'lines') %>%
-add_markers() %>%
-  layout(scene = list(xaxis = list(title = 'Unique Users'),
-                     yaxis = list(title = 'Observation Period (Day)'),
-                     zaxis = list(title = 'Number of Tags')))
-
-# Summary stats...averages per period
-
-
-
 
 # Count the tag use for the first month by each week (T.01 ~ T.16) -- hashtag_population
 hashtag_population_om <- data.table(table(hashtag_population$tag,
@@ -539,7 +369,6 @@ hashtags_fw_ex_once.melt[is.na(hashtags_fw_ex_once.melt)]<-0
 
 
 
-
 # Count the tag use for the first month by each week (T.01 ~ T.16) -- hashtags
 hashtags_om <- data.table(table(hashtags$tag,
                                 format(hashtags$date,
@@ -635,3 +464,7 @@ hashtags_om_ex_once_cumul.melt <- hashtags_om_ex_once_cumul.melt[with(hashtags_o
 hashtags_om_ex_once.melt <- hashtags_om_ex_once.melt[with(hashtags_om_ex_once.melt,order(tag,week.of)),]
 hashtags_om_ex_once_cumul.melt[is.na(hashtags_om_ex_once_cumul.melt)]<-0
 hashtags_om_ex_once.melt[is.na(hashtags_om_ex_once.melt)]<-0
+
+
+
+
