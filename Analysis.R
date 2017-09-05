@@ -22,6 +22,7 @@ hashtags$hour <- substring(hashtags$created_at, 12, 19)
 hashtags$time <- paste(hashtags$date,hashtags$hour)
 hashtags$X <- hashtags$document.id <- hashtags$hour <- hashtags$created_at <- NULL
 hashtags$time <- as.POSIXct(as.character(hashtags$time), format="%Y-%m-%d %H:%M:%S")
+
 hashtags$type <- as.character(hashtags$type); hashtags$type[is.na(hashtags$type)] <- "Other"
 hashtags$taggable_id[is.na(hashtags$taggable_id)] <- "0000000"
 hashtags$week.of <- as.Date(paste(format(hashtags$date,"%Y-%U"),1,sep="-"),"%Y-%U-%u")
