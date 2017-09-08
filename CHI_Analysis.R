@@ -172,6 +172,12 @@ hashtags_om_ex_once_cumul.melt <- merge(hashtags_om_ex_once_cumul.melt,
                                         hashtags_om_new_users,
                                         by=c("tag","week.of"),
                                         all.x=TRUE)
+hashtags_om_user <- ddply(hashtags,~tag+week.of,summarize,
+                          user=user)
+hashtags_om_ex_once_cumul.melt <- merge(hashtags_om_ex_once_cumul.melt,
+                                        hashtags_om_user,
+                                        by=c("tag","week.of"),
+                                        all.x=TRUE)
 hashtags_om_ex_once.melt <- melt(hashtags_om_ex_once,id.vars=("tag"))
 colnames(hashtags_om_ex_once.melt)[c(2,3)] <- c("time","count")
 hashtags_om_ex_once.melt <- merge(hashtags_om_ex_once.melt,
@@ -193,11 +199,15 @@ hashtags_om_ex_once.melt <- merge(hashtags_om_ex_once.melt,
                                   hashtags_om_new_users,
                                   by=c("tag","week.of"),
                                   all.x=TRUE)
-remove(t,hashtags_om_week,hashtags_om_project_tags,hashtags_om_unique_users,hashtags_om_tag_users,hashtags_om_new_users)
+hashtags_om_ex_once.melt <- merge(hashtags_om_ex_once.melt,
+                                  hashtags_om_user,
+                                  by=c("tag","week.of"),
+                                  all.x=TRUE)
+remove(t,hashtags_om_week,hashtags_om_project_tags,hashtags_om_unique_users,hashtags_om_tag_users,hashtags_om_new_users,hashtags_om_user)
 hashtags_om_ex_once_cumul.melt <- hashtags_om_ex_once_cumul.melt[with(hashtags_om_ex_once_cumul.melt,order(tag,week.of)),]
 hashtags_om_ex_once.melt <- hashtags_om_ex_once.melt[with(hashtags_om_ex_once.melt,order(tag,week.of)),]
-hashtags_om_ex_once_cumul.melt[is.na(hashtags_om_ex_once_cumul.melt)] <- 0
-hashtags_om_ex_once.melt[is.na(hashtags_om_ex_once.melt)] <- 0
+hashtags_om_ex_once_cumul.melt[-9][is.na(hashtags_om_ex_once_cumul.melt[-9])] <- 0
+hashtags_om_ex_once.melt[-9][is.na(hashtags_om_ex_once.melt[-9])] <- 0
 hashtags_om_ex_once_cumul.melt <- data.table(hashtags_om_ex_once_cumul.melt)[,unique.users:=cumsum(unique.users), by=list(tag)]
 hashtags_om_ex_once_cumul.melt <-data.frame(hashtags_om_ex_once_cumul.melt[,new.users:=cumsum(new.users), by=list(tag)])
 colnames(hashtags_om_ex_once_cumul.melt)[c(6,8)] <- c("cumul.unique.users","cumul.new.users")
