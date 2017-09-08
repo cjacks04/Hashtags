@@ -147,9 +147,9 @@ hashtag_population_fw_ex_once_cumul.melt <- merge(hashtag_population_fw_ex_once_
                                                   all.x=TRUE)
 #hashtag_population_fw_tag_users <- merge(hashtags,hashtags_fw,by=c("tag","date"))
 #hashtag_population_fw_tag_users <- data.frame(ddply(hashtag_population_fw_tag_users,~date,summarize,
-#                                          tag_users=length(unique(user))))
+#                                          tag.users=length(unique(user))))
 hashtag_population_fw_tag_users <- data.frame(ddply(hashtags,~date,summarize,
-                                                    tag_users=length(unique(user))))
+                                                    tag.users=length(unique(user))))
 hashtag_population_fw_ex_once_cumul.melt <- merge(hashtag_population_fw_ex_once_cumul.melt,
                                                   hashtag_population_fw_tag_users,
                                                   by="date",
@@ -176,9 +176,9 @@ hashtag_population_fw_ex_once_cumul.melt <- hashtag_population_fw_ex_once_cumul.
 hashtag_population_fw_ex_once.melt <- hashtag_population_fw_ex_once.melt[with(hashtag_population_fw_ex_once.melt,order(tag,date)),]
 hashtag_population_fw_ex_once_cumul.melt[is.na(hashtag_population_fw_ex_once_cumul.melt)] <- 0
 hashtag_population_fw_ex_once.melt[is.na(hashtag_population_fw_ex_once.melt)] <- 0
-                                    
-                                    
-                                    
+
+
+
 # Count the tag use for the first month by each week (T.01 ~ T.16) -- hashtag_population
 hashtag_population_om <- data.table(table(hashtag_population$tag,
                                           format(hashtag_population$date,
@@ -246,9 +246,9 @@ hashtag_population_om_ex_once_cumul.melt <- merge(hashtag_population_om_ex_once_
                                                   all.x=TRUE)
 #hashtag_population_om_tag_users <- merge(hashtag_population,hashtag_population_om,by=c("tag","week.of"))
 #hashtag_population_om_tag_users <- data.frame(ddply(hashtag_population_om_tag_users,~week.of,summarize,
-#                                          tag_users=length(unique(user))))
+#                                          tag.users=length(unique(user))))
 hashtag_population_om_tag_users <- data.frame(ddply(hashtag_population,~week.of,summarize,
-                                                    tag_users=length(unique(user))))
+                                                    tag.users=length(unique(user))))
 hashtag_population_om_ex_once_cumul.melt <- merge(hashtag_population_om_ex_once_cumul.melt,
                                                   hashtag_population_om_tag_users,
                                                   by="week.of",
@@ -275,9 +275,9 @@ hashtag_population_om_ex_once_cumul.melt <- hashtag_population_om_ex_once_cumul.
 hashtag_population_om_ex_once.melt <- hashtag_population_om_ex_once.melt[with(hashtag_population_om_ex_once.melt,order(tag,week.of)),]
 hashtag_population_om_ex_once_cumul.melt[is.na(hashtag_population_om_ex_once_cumul.melt)] <- 0
 hashtag_population_om_ex_once.melt[is.na(hashtag_population_om_ex_once.melt)] <- 0
-                                     
-                                     
-                                     
+
+
+
 # Count the tag use for the first two weeks by each day (D.01 ~ D.16) -- hashtags
 hashtags_fw <- data.table(table(hashtags$tag,
                                 hashtags$date))
@@ -340,9 +340,9 @@ hashtags_fw_ex_once_cumul.melt <- merge(hashtags_fw_ex_once_cumul.melt,
                                         all.x=TRUE)
 #hashtags_fw_tag_users <- merge(hashtags,hashtags_fw,by=c("tag","date"))
 #hashtags_fw_tag_users <- data.frame(ddply(hashtags_fw_tag_users,~date,summarize,
-#                                          tag_users=length(unique(user))))
+#                                          tag.users=length(unique(user))))
 hashtags_fw_tag_users <- data.frame(ddply(hashtags,~date,summarize,
-                                          tag_users=length(unique(user))))
+                                          tag.users=length(unique(user))))
 hashtags_fw_ex_once_cumul.melt <- merge(hashtags_fw_ex_once_cumul.melt,
                                         hashtags_fw_tag_users,
                                         by="date",
@@ -369,9 +369,9 @@ hashtags_fw_ex_once_cumul.melt <- hashtags_fw_ex_once_cumul.melt[with(hashtags_f
 hashtags_fw_ex_once.melt <- hashtags_fw_ex_once.melt[with(hashtags_fw_ex_once.melt,order(tag,date)),]
 hashtags_fw_ex_once_cumul.melt[is.na(hashtags_fw_ex_once_cumul.melt)] <- 0
 hashtags_fw_ex_once.melt[is.na(hashtags_fw_ex_once.melt)] <- 0
-                          
-                          
-                          
+
+
+
 # Count the tag use for the first month by each week (T.01 ~ T.16) -- hashtags
 hashtags_om <- data.table(table(hashtags$tag,
                                 format(hashtags$date,
@@ -438,9 +438,9 @@ hashtags_om_ex_once_cumul.melt <- merge(hashtags_om_ex_once_cumul.melt,
                                         all.x=TRUE)
 #hashtags_om_tag_users <- merge(hashtags,hashtags_om,by=c("tag","week.of"))
 #hashtags_om_tag_users <- data.frame(ddply(hashtags_om_tag_users,~week.of,summarize,
-#                                          tag_users=length(unique(user))))
+#                                          tag.users=length(unique(user))))
 hashtags_om_tag_users <- data.frame(ddply(hashtags,~week.of,summarize,
-                                          tag_users=length(unique(user))))
+                                          tag.users=length(unique(user))))
 hashtags_om_ex_once_cumul.melt <- merge(hashtags_om_ex_once_cumul.melt,
                                         hashtags_om_tag_users,
                                         by="week.of",
