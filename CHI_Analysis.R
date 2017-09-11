@@ -93,8 +93,8 @@ hashtags_introduced <- hashtags_introduced[complete.cases(hashtags_introduced[ ,
 
 
 # Count the tag use for the first month by each week (T.01 ~ T.16) -- hashtag_population
-hashtag_population_om <- data.table(table(hashtags$tag,
-                                format(hashtags$date,
+hashtag_population_om <- data.table(table(hashtag_population$tag,
+                                format(hashtag_population$date,
                                        "%Y-%U")))
 names(hashtag_population_om) <- c("tag","week","total")
 hashtag_population_om <- hashtag_population_om[hashtag_population_om$total!=0,]
