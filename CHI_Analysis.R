@@ -213,6 +213,8 @@ hashtag_population_om_ex_once_cumul.melt <- data.table(hashtag_population_om_ex_
 hashtag_population_om_ex_once_cumul.melt <- data.frame(hashtag_population_om_ex_once_cumul.melt[,new.users:=cumsum(new.users), by=list(tag)])
 colnames(hashtag_population_om_ex_once_cumul.melt)[c(6,8)] <- c("cumul.unique.users","cumul.new.users")
 
+write.csv(hashtag_population_om_ex_once.melt, file="hashtag_population_om_ex_once.melt.csv")
+write.csv(hashtag_population_om_ex_once_cumul.melt, file="hashtag_population_om_ex_once_cumul.melt.csv")
 
 T01_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.01"),]
 T01_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.01"),]
