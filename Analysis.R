@@ -34,21 +34,29 @@ hashtags$tag <- tolower(hashtags$tag)
 # Remove the following tags since they are already glitch classes: "BLIP","WHISTLE","NONEOFTHEABOVE","POWERLINE60HZ","KOIFISH","VIOLINMODEHARMONIC","CHIRP","LOWFREQUENCYBURST","NOGLITCH","SCATTEREDLIGHT","HELIX","LIGHTMODULATION","LOWFREQUENCYLINE","PAIREDDOVES","AIRCOMPRESSOR50HZ","REPEATINGBLIPS","SCRATCHY","TOMTE","WANDERINGLINE","EXTREMELYLOUD"
 Glitches = c("blip","whistle","noneoftheabove","powerline60hz","koifish","violinmodeharmonic","chirp","lowfrequencyburst","noglitch","scatteredlight","helix","lightmodulation","lowfrequencyline","paireddoves","aircompressor50hz","repeatingblips","scratchy","tomte","wanderingline","extremelyloud")
 
+<<<<<<< Updated upstream
 known_hashtags <- hashtags[which(hashtags$tag %in% Glitches),]
 hashtags   <- hashtags[which(!hashtags$tag %in% Glitches),]
 
+=======
+hashtags_controlled <- hashtags[which(hashtags$tag %in% Glitches),]
+hashtags_folks   <- hashtags[which(!hashtags$tag %in% Glitches),]
+                  
+>>>>>>> Stashed changes
 
 # Create dataframe to get columns unique tag, date of first use, user_name, use count
 hashtags_introduced <- ddply(hashtags, c("tag"), summarize, 
                              first.use=min(time), 
-                             use.count=sum(length(tag)))
+                             use.count=sum(length(tag)),
+                             unique.users=length(unique(user))
+                             )
 
 hashtags_introduced <- merge(hashtags_introduced, hashtags, 
                              by.x=c("tag", "first.use"), 
-                             by.y=c("tag", "time"))[,c("tag", "first.use", "user", "use.count")]
+                             by.y=c("tag", "time"))[,c("tag", "first.use", "user", "use.count","unique.users")]
 
 names(hashtags_introduced)[names(hashtags_introduced)=='user'] <- 'first.user'
-hashtags_introduced <- hashtags_introduced[hashtags_introduced$use.count != 1,]
+#hashtags_introduced <- hashtags_introduced[hashtags_introduced$use.count != 1,]
 
 # Create subset of tags using hashtags_introduced date > Oct 12, 2016 (launch) and date < June 14, 2017 (1 mth before last observation) and use count > 1
 hashtag_population <- ddply(hashtags, ~ tag, summarize, 
@@ -82,9 +90,15 @@ hashtags_introduced <- merge(hashtags_introduced,
 # First Tags
 hashtags_introduced$Date <- as.Date(hashtags_introduced$first.use)
 hashtags_introduced <- hashtags_introduced[complete.cases(hashtags_introduced[ ,6]),]
+<<<<<<< Updated upstream
                                        
                                        
                                        
+=======
+hashtags_introduced <- hashtags_introduced[which(hashtags_introduced$tag %in% unique(hashtag_population$tag)),]
+
+
+>>>>>>> Stashed changes
 # Count the tag use for the first two weeks by each day (D.01 ~ D.16) -- hashtag_population
 hashtag_population_fw <- data.table(table(hashtag_population$tag,
                                           hashtag_population$date))
@@ -97,9 +111,10 @@ hashtag_population_fw$day.no <- ave(as.integer(hashtag_population_fw$date),
                                     hashtag_population_fw$tag,
                                     FUN=function(x) c(1, diff(x)))
 hashtag_population_fw[,day.no:=cumsum(day.no), by=list(tag)]
+
 hashtag_population_fw <- data.frame(hashtag_population_fw[hashtag_population_fw$day.no <= 16])
 hashtag_population_fw_ex_once <- aggregate(. ~tag, data=hashtag_population_fw[c(1,3,4)], sum)
-hashtag_population_fw_ex_once <- hashtag_population_fw_ex_once[hashtag_population_fw_ex_once$total!=1,]
+#hashtag_population_fw_ex_once <- hashtag_population_fw_ex_once[hashtag_population_fw_ex_once$total!=1,]
 hashtag_population_fw_ex_once$day.no <- hashtag_population_fw_ex_once$total <- NULL
 #hashtag_population_fw_ex_once <- data.frame(once=table(tag=hashtag_population_fw$tag)==1)
 #hashtag_population_fw_ex_once$tag <- row.names(hashtag_population_fw_once)
@@ -197,7 +212,7 @@ hashtag_population_om[,week.no:=cumsum(week.no), by=list(tag)]
 hashtag_population_om <- data.frame(hashtag_population_om[hashtag_population_om$week.no <= 16])
 hashtag_population_om$week.of <- as.Date(paste(hashtag_population_om$week,1,sep="-"),format="%Y-%U-%u")
 hashtag_population_om_ex_once <- aggregate(. ~tag, data=hashtag_population_om[c(1,3,4)], sum)
-hashtag_population_om_ex_once <- hashtag_population_om_ex_once[hashtag_population_om_ex_once$total!=1,]
+#hashtag_population_om_ex_once <- hashtag_population_om_ex_once[hashtag_population_om_ex_once$total!=1,]
 hashtag_population_om_ex_once$week.no <- hashtag_population_om_ex_once$total <- NULL
 #hashtag_population_om_ex_once <- data.frame(once=table(tag=hashtag_population_om$tag)==1)
 #hashtag_population_om_ex_once$tag <- row.names(hashtag_population_om_once)
