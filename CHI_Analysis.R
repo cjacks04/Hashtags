@@ -264,7 +264,7 @@ write.csv(T01_tags, file="T12_tags.csv")
 
 T13_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.13"),]
 T13_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.13"),]
-write.csv(T01_tags, file="13_tags.csv")
+write.csv(T01_tags, file="T13_tags.csv")
 
 T14_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.14"),]
 T14_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.14"),]
