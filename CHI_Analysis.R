@@ -172,12 +172,12 @@ hashtag_population_om_ex_once_cumul.melt <- merge(hashtag_population_om_ex_once_
                                         hashtag_population_om_new_users,
                                         by=c("tag","week.of"),
                                         all.x=TRUE)
-#hashtag_population_om_user <- ddply(hashtags,~tag+week.of,summarize,
-#                          user=user)
-#hashtag_population_om_ex_once_cumul.melt <- merge(hashtag_population_om_ex_once_cumul.melt,
-#                                        hashtag_population_om_user,
-#                                        by=c("tag","week.of"),
-#                                        all.x=TRUE)
+hashtag_population_om_user <- ddply(hashtags,~tag+week.of,summarize,
+                          user=user)
+hashtag_population_om_ex_once_cumul.melt <- merge(hashtag_population_om_ex_once_cumul.melt,
+                                        hashtag_population_om_user,
+                                        by=c("tag","week.of"),
+                                        all.x=TRUE)
 hashtag_population_om_ex_once.melt <- melt(hashtag_population_om_ex_once,id.vars=("tag"))
 colnames(hashtag_population_om_ex_once.melt)[c(2,3)] <- c("time","count")
 hashtag_population_om_ex_once.melt <- merge(hashtag_population_om_ex_once.melt,
@@ -199,12 +199,12 @@ hashtag_population_om_ex_once.melt <- merge(hashtag_population_om_ex_once.melt,
                                   hashtag_population_om_new_users,
                                   by=c("tag","week.of"),
                                   all.x=TRUE)
-#hashtag_population_om_ex_once.melt <- merge(hashtag_population_om_ex_once.melt,
-#                                  hashtag_population_om_user,
-#                                  by=c("tag","week.of"),
-#                                  all.x=TRUE)
+hashtag_population_om_ex_once.melt <- merge(hashtag_population_om_ex_once.melt,
+                                  hashtag_population_om_user,
+                                  by=c("tag","week.of"),
+                                  all.x=TRUE)
 remove(t,hashtag_population_om_week,hashtag_population_om_project_tags,hashtag_population_om_unique_users,hashtag_population_om_tag_users,hashtag_population_om_new_users)
-#remove(hashtag_population_om_user)
+remove(hashtag_population_om_user)
 hashtag_population_om_ex_once_cumul.melt <- hashtag_population_om_ex_once_cumul.melt[with(hashtag_population_om_ex_once_cumul.melt,order(tag,week.of)),]
 hashtag_population_om_ex_once.melt <- hashtag_population_om_ex_once.melt[with(hashtag_population_om_ex_once.melt,order(tag,week.of)),]
 hashtag_population_om_ex_once_cumul.melt[-9][is.na(hashtag_population_om_ex_once_cumul.melt[-9])] <- 0
