@@ -214,50 +214,66 @@ hashtag_population_om_ex_once_cumul.melt <- data.frame(hashtag_population_om_ex_
 colnames(hashtag_population_om_ex_once_cumul.melt)[c(6,8)] <- c("cumul.unique.users","cumul.new.users")
 
 
-T01_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.01"),]
+T01_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.01"),]
 T01_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.01"),]
+write.csv(T01_tags, file="T01_tags.csv")
 
-T02_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.02"),]
+T02_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.02"),]
 T02_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.02"),]
+write.csv(T01_tags, file="T02_tags.csv")
 
-T03_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.03"),]
+T03_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.03"),]
 T03_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.03"),]
+write.csv(T01_tags, file="T03_tags.csv")
 
-T04_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.04"),]
+T04_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.04"),]
 T04_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.04"),]
+write.csv(T01_tags, file="T04_tags.csv")
 
-T05_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.05"),]
+T05_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.05"),]
 T05_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.05"),]
+write.csv(T01_tags, file="T05_tags.csv")
 
-T06_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.06"),]
+T06_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.06"),]
 T06_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.06"),]
+write.csv(T01_tags, file="T06_tags.csv")
 
-T07_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.08"),]
-T07_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.08"),]
+T07_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.07"),]
+T07_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.07"),]
+write.csv(T01_tags, file="T07_tags.csv")
 
-T08_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.08"),]
+T08_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.08"),]
 T08_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.08"),]
+write.csv(T01_tags, file="T08_tags.csv")
 
-T09_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.09"),]
+T09_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.09"),]
 T09_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.09"),]
+write.csv(T01_tags, file="T09_tags.csv")
 
-T10_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.10"),]
+T10_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.10"),]
 T10_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.10"),]
+write.csv(T01_tags, file="T10_tags.csv")
 
-T11_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.11"),]
+T11_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.11"),]
 T11_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.11"),]
+write.csv(T01_tags, file="T11_tags.csv")
 
-T12_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.12"),]
+T12_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.12"),]
 T12_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.12"),]
+write.csv(T01_tags, file="T12_tags.csv")
 
-T13_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.13"),]
+T13_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.13"),]
 T13_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.13"),]
+write.csv(T01_tags, file="13_tags.csv")
 
-T14_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.14"),]
+T14_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.14"),]
 T14_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.14"),]
+write.csv(T01_tags, file="T14_tags.csv")
 
-T15_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.15"),]
+T15_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.15"),]
 T15_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.15"),]
+write.csv(T01_tags, file="T15_tags.csv")
 
-T16_tags <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once.melt$time=="T.16"),]
+T16_tags <- hashtag_population_om_ex_once.melt[which(hashtag_population_om_ex_once.melt$time=="T.16"),]
 T16_tags_cumul <- hashtag_population_om_ex_once_cumul.melt[which(hashtag_population_om_ex_once_cumul.melt$time=="T.16"),]
+write.csv(T01_tags, file="T16_tags.csv")
