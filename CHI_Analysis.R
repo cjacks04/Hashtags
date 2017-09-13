@@ -221,64 +221,64 @@ T_tags_ex_NA_user_cumul <- hashtag_population_om_ex_once_cumul.melt[is.na(hashta
 
 T01_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.01"),]
 T01_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.01"),]
-write.csv(T01_tags, file="T01_tags.csv")
+write.csv(T01_tags, file="T01_tags.csv"); write.csv(T01_tags_cumul, file="T01_tags_cumul.csv")
 
 T02_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.02"),]
 T02_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.02"),]
-write.csv(T01_tags, file="T02_tags.csv")
+write.csv(T02_tags, file="T02_tags.csv"); write.csv(T02_tags_cumul, file="T02_tags_cumul.csv")
 
 T03_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.03"),]
 T03_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.03"),]
-write.csv(T01_tags, file="T03_tags.csv")
+write.csv(T03_tags, file="T03_tags.csv"); write.csv(T03_tags_cumul, file="T03_tags_cumul.csv")
 
 T04_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.04"),]
 T04_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.04"),]
-write.csv(T01_tags, file="T04_tags.csv")
+write.csv(T04_tags, file="T04_tags.csv"); write.csv(T04_tags_cumul, file="T04_tags_cumul.csv")
 
 T05_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.05"),]
 T05_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.05"),]
-write.csv(T01_tags, file="T05_tags.csv")
+write.csv(T05_tags, file="T05_tags.csv"); write.csv(T05_tags_cumul, file="T05_tags_cumul.csv")
 
 T06_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.06"),]
 T06_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.06"),]
-write.csv(T01_tags, file="T06_tags.csv")
+write.csv(T06_tags, file="T06_tags.csv"); write.csv(T06_tags_cumul, file="T06_tags_cumul.csv")
 
 T07_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.07"),]
 T07_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.07"),]
-write.csv(T01_tags, file="T07_tags.csv")
+write.csv(T07_tags, file="T07_tags.csv"); write.csv(T07_tags_cumul, file="T07_tags_cumul.csv")
 
 T08_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.08"),]
 T08_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.08"),]
-write.csv(T01_tags, file="T08_tags.csv")
+write.csv(T08_tags, file="T08_tags.csv"); write.csv(T08_tags_cumul, file="T08_tags_cumul.csv")
 
 T09_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.09"),]
 T09_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.09"),]
-write.csv(T01_tags, file="T09_tags.csv")
+write.csv(T09_tags, file="T09_tags.csv"); write.csv(T09_tags_cumul, file="T09_tags_cumul.csv")
 
 T10_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.10"),]
 T10_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.10"),]
-write.csv(T01_tags, file="T10_tags.csv")
+write.csv(T10_tags, file="T10_tags.csv"); write.csv(T10_tags_cumul, file="T10_tags_cumul.csv")
 
 T11_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.11"),]
 T11_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.11"),]
-write.csv(T01_tags, file="T11_tags.csv")
+write.csv(T11_tags, file="T11_tags.csv"); write.csv(T11_tags_cumul, file="T11_tags_cumul.csv")
 
 T12_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.12"),]
 T12_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.12"),]
-write.csv(T01_tags, file="T12_tags.csv")
+write.csv(T12_tags, file="T12_tags.csv"); write.csv(T12_tags_cumul, file="T12_tags_cumul.csv")
 
 T13_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.13"),]
 T13_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.13"),]
-write.csv(T01_tags, file="T13_tags.csv")
+write.csv(T13_tags, file="T13_tags.csv"); write.csv(T13_tags_cumul, file="T13_tags_cumul.csv")
 
 T14_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.14"),]
 T14_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.14"),]
-write.csv(T01_tags, file="T14_tags.csv")
+write.csv(T14_tags, file="T14_tags.csv"); write.csv(T14_tags_cumul, file="T14_tags_cumul.csv")
 
 T15_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.15"),]
 T15_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.15"),]
-write.csv(T01_tags, file="T15_tags.csv")
+write.csv(T15_tags, file="T15_tags.csv"); write.csv(T15_tags_cumul, file="T15_tags_cumul.csv")
 
 T16_tags <- T_tags_ex_NA_user[which(T_tags_ex_NA_user$time=="T.16"),]
 T16_tags_cumul <- T_tags_ex_NA_user_cumul[which(T_tags_ex_NA_user_cumul$time=="T.16"),]
-write.csv(T01_tags, file="T16_tags.csv")
+write.csv(T16_tags, file="T16_tags.csv"); write.csv(T16_tags_cumul, file="T16_tags_cumul.csv")
